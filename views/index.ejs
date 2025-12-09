@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+</head>
+<body>
+    <div class="container">
+    <h1>Url Shrinker</h1>
+    <form action="/shortUrls" method="post" class="my-4 form-inline">
+        <label for="FullUrl" class="sr-only">URL</label>
+        <input required placeholder="url" type="url" name="FullUrl" id="FullUrl" class="form-control mr-2">
+        <button class="btn btn-suc" type="submit">Shrink</button>
+    </form>
+
+    <table class="table table-striped table-responsive">
+        <thead class="table-dark">
+    <tr>
+        <th>Full URL</th>
+        <th>Short URL</th>
+        <th>Clicks</th>
+        <th>QR Code</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        <% sho.forEach(shortUrl => { %>
+            <tr>
+                <td><a href="<%=shortUrl.full%>" target="_blank"><%=shortUrl.full%></a></td>
+                <td><a href="<%=shortUrl.short%>" target="_blank"><%=shortUrl.short%></a></td>
+                <td><%=shortUrl.clicks%></td>
+                <td>
+                    <div id="qrcode-<%=shortUrl._id%>"></div>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('<%=shortUrl.short%>')">Copy</button>
+                </td>
+            </tr>
+        <% }) %>
+    </tbody>
+    </table>
+    </div>
+
+    <script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Copied to clipboard!");
+        });
+    }
+
+    <% sho.forEach(shortUrl => { %>
+        new QRCode(document.getElementById("qrcode-<%=shortUrl._id%>"), {
+            text: "<%=shortUrl.short%>",
+            width: 80,
+            height: 80,
+            colorDark : "#0d6efd",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    <% }) %>
+</script>
+
+
+</body>
+</html>
